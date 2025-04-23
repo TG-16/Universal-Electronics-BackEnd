@@ -5,10 +5,11 @@ const orderModel = require('../models/orderModel');
 
 const signup = async (req, res) => {
     const { name, email, phone, password } = req.body;
+    console.log(req.body);
     try {
         const newUser = new userModel({ name, email, phone, password });
         await newUser.save();
-        res.status(201).json({ message: 'User registered successfully' });
+        res.status(200).json({ message: 'User registered successfully' });
     } catch (error) {
         res.status(500).json({ error: 'Error registering user' });
     }

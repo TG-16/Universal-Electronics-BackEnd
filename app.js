@@ -5,7 +5,9 @@ const morgan = require('morgan');
 const app = express();
 const userRoute = require('./routes/userRoute');
 const adminRoute = require('./routes/adminRoute');
+const cors = require('cors');
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
@@ -17,7 +19,7 @@ mongoose.connect('mongodb://localhost:27017/UniversalElectronics'
 )
 .then(() => {
     console.log('Connected to MongoDB');
-    app.listen(3000, () => {
+    app.listen(5000, () => {
         console.log('Server is running on port 3000');
     });
 })
