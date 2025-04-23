@@ -1,5 +1,6 @@
 const userModel = require('../models/userModel');
 const productModel = require('../models/productModel');
+const orderModel = require('../models/orderModel');
 
 const signup = async (req, res) => {
 
@@ -33,7 +34,7 @@ const login = async (req, res) => {
 
 const productList = async (req, res) => {
     try {
-        const products = await productModel.find();
+        const products = await productModel.find().sort({ createdAt: -1 }); 
         res.status(200).json(products);
     } catch (error) {
         res.status(500).json({ error: 'Error fetching products' });
@@ -71,10 +72,25 @@ const checkout = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
         
+        const order = new orderModel({
+            user: userId,
+            products: products.map(product => ({
+                product: product.productId,
+                quantity: product.quantity,
+            })),
+            totalAmount: products.reduce(async(total, product) => {
+                const productDetails = await productModel.findById(product.productId);
+                return total + (productDetails.price * product.quantity);
+            }, 0),
+        });
+        await order.save();
+
         products.forEach(async product => {
             const product = await productModel.findById(productId);
             product.stock -= quantity;
             await product.save();
+
+
         });
 
         // Implement checkout logic here (e.g., create an order, update stock, etc.)

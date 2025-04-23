@@ -61,8 +61,45 @@ const checkoutValidator = (req, res, next) => {
     next();
 }
 
+const addProductValidator = (req, res, next) => {
+    const { name, price, stock, description, category } = req.body;
+
+    if (!name || !price || !stock || !description) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    if (price <= 0) {
+        return res.status(400).json({ error: 'Price must be greater than 0' });
+    }
+
+    if (stock < 0) {
+        return res.status(400).json({ error: 'Stock cannot be negative' });
+    }
+
+    next();
+}
+
+// const updateProductValidator = (req, res, next) => {
+//     const { name, price, stock, description, category } = req.body;
+
+//     if (!name || !price || !stock || !description) {
+//         return res.status(400).json({ error: 'All fields are required' });
+//     }
+
+//     if (price <= 0) {
+//         return res.status(400).json({ error: 'Price must be greater than 0' });
+//     }
+
+//     if (stock < 0) {
+//         return res.status(400).json({ error: 'Stock cannot be negative' });
+//     }
+
+//     next();
+// }
+
 module.exports = { 
     signupValidator,
     loginValidator,
-    checkoutValidator
+    checkoutValidator,
+    addProductValidator
  };
