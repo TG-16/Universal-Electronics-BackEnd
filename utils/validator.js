@@ -2,7 +2,7 @@
 const signupValidator = (req, res, next) => {
     const { name, email, phone, password } = req.body;
 
-    if (!name || !email || !phone || !password) {
+    if (!name || !phone || !password) {
         return res.status(400).json({ error: 'All fields are required' });
     }
 

@@ -1,6 +1,9 @@
 const userModel = require('../models/userModel');
 const productModel = require('../models/productModel');
 const orderModel = require('../models/orderModel');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+dotenv.config({path: './utils/.env'});
 
 const login = async (req, res) => {
     const { phone, password } = req.body;
@@ -14,6 +17,8 @@ const login = async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
+        const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        res.cookie('JWT', token, { httpOnly: true, secure: true, maxAge: 3600000 });
         res.status(200).json({ message: 'Login successful' });
     }
     catch (error) {

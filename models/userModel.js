@@ -9,6 +9,8 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         unique: true,
+        partialFilterExpression: { email: { $type: 'string' } },
+        sparse: true,
     },
     phone: {
         type: String,
