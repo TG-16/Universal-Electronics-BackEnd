@@ -59,10 +59,11 @@ const addProduct = async (req, res) => {
   };
   
 
-const search =  async (req, res) => {
+  const search = async (req, res) => {
     const { name } = req.params;
     try {
-        const product = await productModel.findById(name);
+        const regex = new RegExp(name, 'i');
+        const product = await productModel.findOne({ name:{$regex: regex} });
         if (!product) {
             return res.status(404).json({ error: 'Product not found' });
         }
@@ -82,7 +83,7 @@ const orderList = async (req, res) => {
                 model: 'Product',
             });  // populates each product inside the array
 
-        console.log(JSON.stringify(orders, null, 2));  // Helpful for debugging
+        // console.log(JSON.stringify(orders, null, 2));  // Helpful for debugging
         res.status(200).json(orders);
     } catch (error) {
         console.error(error);
@@ -121,14 +122,32 @@ const deleteProduct = async (req, res) => {
     }
   };
 
-const logout = async (req, res) => {
+  const logout = async (req, res) => {
     try {
         res.clearCookie('JWT', { httpOnly: true, secure: true });
+        res.cookie('JWT', "", { httpOnly: true, secure: true, maxAge: 0 });
         res.status(200).json({ message: 'Logout successful' });
     } catch (error) {
         res.status(500).json({ error: 'Error logging out' });
     }
 }
+
+const updateOrder = async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+  
+    try {
+      const updatedOrder = await orderModel.findByIdAndUpdate(id, { status });
+  
+      if (!updatedOrder) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+  
+      res.status(200).json(updatedOrder);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update order" });
+    }
+  };
 
 
 module.exports = {
@@ -138,6 +157,7 @@ module.exports = {
     orderList,
     updateProduct,
     deleteProduct,
+    updateOrder,
     login,
     logout
 };

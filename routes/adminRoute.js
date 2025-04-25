@@ -12,6 +12,7 @@ router.get('/orderList', adminController.orderList);
 router.put('/updateProduct/:id', validator.addProductValidator, adminController.updateProduct);
 router.delete('/deleteProduct/:id', adminController.deleteProduct);
 router.get('/logout', adminController.logout);
+router.put('/updateOrder/:id', adminController.updateOrder);
 
 
 module.exports = router;
