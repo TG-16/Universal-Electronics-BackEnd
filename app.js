@@ -25,7 +25,9 @@ app.use(cookieParser());
 
 app.use('/api/users', userRoute);
 app.use('/api/admin', adminRoute);
-app.get("/check-auth" , checkAuth);
+app.get("/check-auth" , checkAuth.checkAuth);
+app.get("/check-login" , checkAuth.checkLogin);
+app.get("/find-userId" , checkAuth.findUserId);
 
 const port = process.env.PORT ;
 const dbURI = process.env.MONGO_URI ;

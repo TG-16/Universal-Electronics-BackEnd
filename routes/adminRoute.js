@@ -9,6 +9,7 @@ router.get('/productList', adminController.productList);
 router.get('/search/:name', adminController.search);
 router.get('/orderList', adminController.orderList);
 router.post('/updateProduct/:id', validator.addProductValidator, adminController.updateProduct);
+router.get('/logout', adminController.logout);
 
 
 module.exports = router;

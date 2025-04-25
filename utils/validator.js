@@ -49,7 +49,7 @@ const checkoutValidator = (req, res, next) => {
     }
 
     products.forEach(product => {
-        if (!product.name || !product.quantity) {
+        if (!product.productId || !product.quantity) {
             return res.status(400).json({ error: 'Product ID and quantity are required for each product' });
         }
 

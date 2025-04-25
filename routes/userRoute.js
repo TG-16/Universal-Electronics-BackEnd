@@ -9,6 +9,7 @@ router.post('/login', validator.loginValidator, userController.login);
 router.get("/productList", userController.productList);
 router.get("/search/:name", userController.search);
 router.post("/checkout", validator.checkoutValidator, userController.checkout);
+router.get("/logout", userController.logout);
 
 
 module.exports = router;
