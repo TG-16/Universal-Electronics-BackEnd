@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config({path: './utils/.env'});
+const multer = require("multer");
+const path = require("path");
 
 
 const checkAuth = (req, res) => {
@@ -49,8 +51,22 @@ const findUserId = (req, res) => {
     }
 }
 
+// Configure storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // Folder to store uploaded images (make sure it exists)
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+  },
+});
+
+const upload = multer({ storage });
+
+
 module.exports = {
     checkAuth,
     checkLogin,
-    findUserId
+    findUserId,
+    upload
 }

@@ -38,14 +38,26 @@ const productList = async (req, res) => {
 
 const addProduct = async (req, res) => {
     const { name, price, stock, description, category } = req.body;
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+  
     try {
-        const newProduct = new productModel({ name, price, stock, description, category });
-        await newProduct.save();
-        res.status(201).json({ message: 'Product added successfully' });
+      const newProduct = new productModel({
+        name,
+        price,
+        stock,
+        description,
+        category,
+        image: imagePath, // Save the filename or full path
+      });
+  
+      await newProduct.save();
+      res.status(201).json({ message: "Product added successfully" });
     } catch (error) {
-        res.status(500).json({ error: 'Error adding product' });
+      console.error(error);
+      res.status(500).json({ error: "Error adding product" });
     }
-};
+  };
+  
 
 const search =  async (req, res) => {
     const { name } = req.params;
@@ -62,12 +74,22 @@ const search =  async (req, res) => {
 
 const orderList = async (req, res) => {
     try {
-        const orders = await orderModel.find().sort({ createdAt: -1 });
+        const orders = await orderModel.find()
+            .sort({ createdAt: -1 })
+            .populate('user')  // populates the user
+            .populate({
+                path: 'products.product',
+                model: 'Product',
+            });  // populates each product inside the array
+
+        console.log(JSON.stringify(orders, null, 2));  // Helpful for debugging
         res.status(200).json(orders);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Error fetching orders' });
     }
 };
+
 
 const updateProduct = async (req, res) => {
     const { id } = req.params;
@@ -77,11 +99,27 @@ const updateProduct = async (req, res) => {
         if (!updatedProduct) {
             return res.status(404).json({ error: 'Product not found' });
         }
-        res.status(200).json({ message: 'Product Updated successfully' });
+        res.status(200).json(updatedProduct);
     } catch (error) {
         res.status(500).json({ error: 'Error updating product' });
     }
 };
+
+const deleteProduct = async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      const deleted = await productModel.findByIdAndDelete(id);
+  
+      if (!deleted) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+  
+      res.json({ message: "Product deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete product" });
+    }
+  };
 
 const logout = async (req, res) => {
     try {
@@ -99,6 +137,7 @@ module.exports = {
     search,
     orderList,
     updateProduct,
+    deleteProduct,
     login,
     logout
 };

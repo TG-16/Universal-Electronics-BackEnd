@@ -22,6 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 app.use(cookieParser());
+app.use("/uploads", express.static("uploads"));
 
 app.use('/api/users', userRoute);
 app.use('/api/admin', adminRoute);

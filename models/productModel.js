@@ -21,6 +21,11 @@ const productSchema = new mongoose.Schema({
         type: String,
         default: 'General',
     },
+    image: {
+        type: String,
+        required: true,
+        default: '/uploads/default.png', // Default image path
+    },
 }, { timestamps: true });
 
 const productModel = mongoose.model('Product', productSchema);
